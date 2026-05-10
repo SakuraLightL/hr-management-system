@@ -3,6 +3,7 @@ package com.portfolio.hr_system.repository;
 import com.portfolio.hr_system.entity.Employee;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -10,37 +11,68 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 import java.util.Optional;
 
-public interface EmployeeRepository extends JpaRepository<Employee, Long> {
+public interface EmployeeRepository
+        extends JpaRepository<Employee, Long> {
 
-        Page<Employee> findByNameContaining(String name, Pageable pageable);
+        /**
+         * 名前部分一致検索
+         */
+        Page<Employee> findByNameContaining(
+                String name,
+                Pageable pageable
+        );
 
-        @Query("SELECT e FROM Employee e LEFT JOIN FETCH e.department")
+        /**
+         * 部署込み全件取得
+         */
+        @EntityGraph(attributePaths = "department")
+        @Query("""
+           SELECT e FROM Employee e
+           """)
         List<Employee> findAllWithDepartment();
 
-        @Query(
-                value = "SELECT e FROM Employee e LEFT JOIN FETCH e.department",
-                countQuery = "SELECT COUNT(e) FROM Employee e"
-        )
-        Page<Employee> findAllWithDepartment(Pageable pageable);
-
-        @Query("""
-            SELECT e FROM Employee e
-            LEFT JOIN FETCH e.department
-            WHERE e.id = :id
-            """)
-        Optional<Employee> findByIdWithDepartment(@Param("id") Long id);
-
+        /**
+         * 部署込みページ取得
+         */
+        @EntityGraph(attributePaths = "department")
         @Query(
                 value = """
                     SELECT e FROM Employee e
-                    LEFT JOIN FETCH e.department
-                    WHERE (:name IS NULL
-                        OR e.name LIKE CONCAT('%', :name, '%'))
                     """,
                 countQuery = """
                     SELECT COUNT(e) FROM Employee e
-                    WHERE (:name IS NULL
-                        OR e.name LIKE CONCAT('%', :name, '%'))
+                    """
+        )
+        Page<Employee> findAllWithDepartment(
+                Pageable pageable
+        );
+
+        /**
+         * ID検索（部署込み）
+         */
+        @EntityGraph(attributePaths = "department")
+        Optional<Employee> findById(Long id);
+
+        /**
+         * 名前検索（部署込み）
+         */
+        @EntityGraph(attributePaths = "department")
+        @Query(
+                value = """
+                    SELECT e FROM Employee e
+                    WHERE (
+                        :name IS NULL
+                        OR :name = ''
+                        OR e.name LIKE CONCAT('%', :name, '%')
+                    )
+                    """,
+                countQuery = """
+                    SELECT COUNT(e) FROM Employee e
+                    WHERE (
+                        :name IS NULL
+                        OR :name = ''
+                        OR e.name LIKE CONCAT('%', :name, '%')
+                    )
                     """
         )
         Page<Employee> searchWithDepartment(

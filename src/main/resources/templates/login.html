@@ -4,7 +4,8 @@
 
 <head>
   <meta charset="UTF-8">
-  <title>Login</title>
+
+  <title>ログイン</title>
 
   <meta name="viewport"
         content="width=device-width, initial-scale=1">
@@ -57,7 +58,9 @@
 
     <div class="col-auto">
 
+      <!-- Logo -->
       <div class="logo-area">
+
         <div class="logo-title">
           HR System
         </div>
@@ -65,8 +68,10 @@
         <div class="logo-sub">
           Employee Management System
         </div>
+
       </div>
 
+      <!-- Login Card -->
       <div class="card shadow-sm login-card">
 
         <div class="card-body p-4">
@@ -75,10 +80,27 @@
             Login
           </h3>
 
+          <!-- Google Login -->
+          <div class="d-grid mb-3">
+
+            <a href="/oauth2/authorization/google"
+               class="btn btn-outline-danger">
+
+              Googleアカウントでログイン
+
+            </a>
+
+          </div>
+
+          <div class="text-center text-muted mb-3">
+            or
+          </div>
+
+          <!-- Form Login -->
           <form th:action="@{/login}"
                 method="post">
 
-            <!-- Error Message -->
+            <!-- Error -->
             <div th:if="${param.error}"
                  class="alert alert-danger">
 
@@ -86,7 +108,7 @@
 
             </div>
 
-            <!-- Logout Message -->
+            <!-- Logout -->
             <div th:if="${param.logout}"
                  class="alert alert-success">
 
@@ -124,7 +146,7 @@
 
             </div>
 
-            <!-- Button -->
+            <!-- Login Button -->
             <div class="d-grid">
 
               <button type="submit"
@@ -142,6 +164,7 @@
 
       </div>
 
+      <!-- Footer -->
       <div class="text-center mt-3 text-muted small">
         © HR System
       </div>

@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="ja"
-      xmlns:th="http://www.thymeleaf.org">
-
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
-    <title>Department List</title>
+    <title>部署管理</title>
 
     <meta name="viewport"
           content="width=device-width, initial-scale=1">
@@ -44,11 +44,14 @@
 <div class="container-fluid">
     <div class="row">
 
-        <!-- Sidebar -->
         <aside class="col-md-2 sidebar p-3">
             <h4 class="text-white mb-4">
                 HR System
             </h4>
+
+            <a href="/dashboard">
+                一覧
+            </a>
 
             <a href="/employees">
                 社員管理
@@ -58,12 +61,12 @@
                 部署管理
             </a>
 
-            <a href="/users">
+            <a href="/users"
+               sec:authorize="hasRole('ADMIN')">
                 ユーザー管理
             </a>
         </aside>
 
-        <!-- Main -->
         <main class="col-md-10 p-4">
 
             <div class="d-flex justify-content-between align-items-center mb-4">
@@ -77,10 +80,23 @@
                     </div>
                 </div>
 
-                <a href="/departments/new"
-                   class="btn btn-primary">
-                    New Department
-                </a>
+                <div>
+                    <span class="me-3 text-muted"
+                          th:if="${loginUser != null}">
+                        ログイン中：
+                        <span th:text="${loginUser}"></span>
+                    </span>
+
+                    <a href="/departments/new"
+                       class="btn btn-primary">
+                        New Department
+                    </a>
+
+                    <a href="/logout"
+                       class="btn btn-outline-secondary ms-2">
+                        Logout
+                    </a>
+                </div>
             </div>
 
             <div class="card shadow-sm">
@@ -121,6 +137,13 @@
                                        onclick="return confirm('削除しますか？')">
                                         Delete
                                     </a>
+                                </td>
+                            </tr>
+
+                            <tr th:if="${#lists.isEmpty(departments)}">
+                                <td colspan="4"
+                                    class="text-center text-muted py-4">
+                                    部署データがありません
                                 </td>
                             </tr>
                             </tbody>

@@ -1,37 +1,71 @@
-HELP.md
+# =========================
+# Maven / Build
+# =========================
 target/
-.mvn/wrapper/maven-wrapper.jar
+build/
+out/
+
 !**/src/main/**/target/
 !**/src/test/**/target/
+!**/src/main/**/build/
+!**/src/test/**/build/
 
-### STS ###
-.apt_generated
-.classpath
-.factorypath
-.project
-.settings
-.springBeans
-.sts4-cache
+# =========================
+# Maven Wrapper
+# =========================
+.mvn/wrapper/maven-wrapper.jar
 
-### IntelliJ IDEA ###
-.idea
+# =========================
+# Spring Boot
+# =========================
+HELP.md
+
+# Local Properties
+src/main/resources/application-local.properties
+src/main/resources/application-prod.properties
+
+# Env
+.env
+
+# Logs
+logs/
+*.log
+
+# =========================
+# IntelliJ IDEA
+# =========================
+.idea/
 *.iws
 *.iml
 *.ipr
 
-### NetBeans ###
+# =========================
+# Eclipse / STS
+# =========================
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings/
+.springBeans
+.sts4-cache
+
+# =========================
+# VS Code
+# =========================
+.vscode/
+
+# =========================
+# NetBeans
+# =========================
 /nbproject/private/
 /nbbuild/
 /dist/
 /nbdist/
 /.nb-gradle/
-build/
-!**/src/main/**/build/
-!**/src/test/**/build/
-logs/src/main/resources/application-local.properties
 
-### VS Code ###
-.vscode/
-.idea/
-logs/
-src/main/resources/application-local.properties
+# =========================
+# OS
+# =========================
+.DS_Store
+Thumbs.db

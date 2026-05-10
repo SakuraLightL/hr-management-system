@@ -19,27 +19,11 @@ Java + Spring Boot を用いた社員管理システム
 - Thymeleaf
 - JavaScript（fetch API）
 
-## API仕様
+## API例
 
-本アプリでは、社員情報管理機能をREST APIとして実装しています。  
-API仕様はSwagger UIから確認できます。
+GET /api/employees
 
-### Swagger UI
-
-http://localhost:8080/swagger-ui.html
-
-### OpenAPI Docs
-
-http://localhost:8080/v3/api-docs
-
-## Employee API
-
-| Method | Endpoint | Description |
-|---|---|---|
-| GET | /api/employees | 社員一覧取得 |
-| POST | /api/employees | 社員登録 |
-| PUT | /api/employees/{id} | 社員情報更新 |
-| DELETE | /api/employees/{id} | 社員削除 |
+POST /api/employees
 
 ## 特徴
 - DTOによるデータ分離

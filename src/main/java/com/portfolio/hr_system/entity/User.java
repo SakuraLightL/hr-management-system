@@ -1,7 +1,13 @@
 package com.portfolio.hr_system.entity;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
+@Getter
+@Setter
+@NoArgsConstructor
 @Entity
 @Table(name = "users")
 public class User {
@@ -10,22 +16,28 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    // ログイン名
+    @Column(nullable = false, length = 100)
     private String username;
 
+    // パスワード
+    @Column(length = 255)
     private String password;
 
-    private String role; // ADMIN or USER
+    // 権限
+    // ADMIN / USER
+    @Column(nullable = false, length = 50)
+    private String role;
 
-    public User() {}
+    // Googleログイン用メール
+    @Column(unique = true, length = 255)
+    private String email;
 
-    public Long getId() { return id; }
+    // Google Provider ID
+    @Column(unique = true, length = 255)
+    private String providerId;
 
-    public String getUsername() { return username; }
-    public void setUsername(String username) { this.username = username; }
-
-    public String getPassword() { return password; }
-    public void setPassword(String password) { this.password = password; }
-
-    public String getRole() { return role; }
-    public void setRole(String role) { this.role = role; }
+    // LOCAL / GOOGLE
+    @Column(length = 50)
+    private String provider;
 }

@@ -1,0 +1,47 @@
+services:
+
+  mysql:
+    image: mysql:8.4
+    container_name: hr-mysql
+
+    command:
+      --character-set-server=utf8mb4
+      --collation-server=utf8mb4_unicode_ci
+
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/hr_portfolio
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: xmy890425
+
+      GOOGLE_CLIENT_ID:  ${GOOGLE_CLIENT_ID}
+      GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET}
+
+    ports:
+      - "3307:3306"
+
+    volumes:
+      - mysql-data:/var/lib/mysql
+
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-pxmy890425"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  app:
+    build: .
+
+    container_name: hr-app
+
+    depends_on:
+      mysql:
+        condition: service_healthy
+
+    ports:
+      - "8080:8080"
+
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+
+volumes:
+  mysql-data:

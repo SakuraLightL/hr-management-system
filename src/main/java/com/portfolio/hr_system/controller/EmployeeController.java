@@ -1,7 +1,7 @@
 package com.portfolio.hr_system.controller;
 
 import com.portfolio.hr_system.dto.EmployeeDto;
-import com.portfolio.hr_system.entity.Employee;
+import com.portfolio.hr_system.repository.DepartmentRepository;
 import com.portfolio.hr_system.service.EmployeeService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -19,9 +19,12 @@ import org.springframework.web.bind.annotation.*;
 public class EmployeeController {
 
     private final EmployeeService service;
+    private final DepartmentRepository departmentRepository;
 
-    public EmployeeController(EmployeeService service) {
+    public EmployeeController(EmployeeService service,
+                              DepartmentRepository departmentRepository) {
         this.service = service;
+        this.departmentRepository = departmentRepository;
     }
 
     @GetMapping
@@ -49,27 +52,49 @@ public class EmployeeController {
     }
 
     @GetMapping("/new")
-    public String createForm(Model model) {
+    public String createForm(Model model,
+                             Authentication authentication) {
+
         model.addAttribute("employee", new EmployeeDto());
+        model.addAttribute("departments",
+                departmentRepository.findAllByOrderByNameAsc());
+        model.addAttribute("loginUser", getLoginUserName(authentication));
+
         return "employee-form";
     }
 
     @PostMapping("/save")
     public String save(@ModelAttribute EmployeeDto dto) {
+
         service.saveFromDto(dto);
+
         return "redirect:/employees";
     }
 
     @GetMapping("/edit/{id}")
-    public String editForm(@PathVariable Long id, Model model) {
+    public String editForm(@PathVariable Long id,
+                           Model model,
+                           Authentication authentication) {
+
         EmployeeDto dto = service.findDtoById(id);
+
+        if (dto == null) {
+            return "redirect:/employees";
+        }
+
         model.addAttribute("employee", dto);
+        model.addAttribute("departments",
+                departmentRepository.findAllByOrderByNameAsc());
+        model.addAttribute("loginUser", getLoginUserName(authentication));
+
         return "employee-form";
     }
 
     @GetMapping("/delete/{id}")
     public String deleteEmployee(@PathVariable Long id) {
+
         service.delete(id);
+
         return "redirect:/employees";
     }
 

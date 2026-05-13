@@ -51,20 +51,18 @@
           <div id="positionError" class="text-danger small mt-1"></div>
         </div>
 
-        <div class="mb-4">
-          <label for="departmentId" class="form-label">部署</label>
+        <div class="mb-3">
+          <label class="form-label">部署</label>
 
-          <select id="departmentId" class="form-select">
-            <option value="">選択してください</option>
+          <select th:field="*{departmentId}"
+                  class="form-select">
+            <option value="">未選択</option>
 
             <option th:each="dept : ${departments}"
                     th:value="${dept.id}"
-                    th:text="${dept.name}"
-                    th:selected="${employee.departmentId == dept.id}">
+                    th:text="${dept.name}">
             </option>
           </select>
-
-          <div id="departmentIdError" class="text-danger small mt-1"></div>
         </div>
 
         <div id="globalMessage" class="mb-3"></div>

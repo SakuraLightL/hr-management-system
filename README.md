@@ -63,10 +63,29 @@ flowchart LR
     end
 ```
 
-## システム構成図
-<p align="center">
-<img src="images/mermaid-diagram.png" width="2745">
-</p>
+## アプリケーション構成
+    src/main/java/com/portfolio/hr_system
+    
+    controller
+    画面遷移・リクエスト制御
+    
+    service
+    業務処理・トランザクション管理
+    
+    repository
+    DBアクセス
+    
+    entity
+    DBテーブル定義
+    
+    dto
+    画面/API用データ受け渡し
+    
+    config
+    Spring Security設定
+    
+    exception
+    共通例外処理
 
 ## 起動方法
 1. リポジトリ取得

@@ -1,0 +1,25 @@
+-- Existing databases must resolve duplicate usernames before applying this migration.
+ALTER TABLE users ADD CONSTRAINT uk_users_username UNIQUE (username);
+UPDATE users SET provider = 'LOCAL' WHERE provider IS NULL;
+ALTER TABLE users ADD CONSTRAINT ck_users_role CHECK (role IN ('ADMIN', 'USER'));
+ALTER TABLE users ADD CONSTRAINT ck_users_provider CHECK (provider IN ('LOCAL', 'GOOGLE'));
+CREATE INDEX idx_employees_name ON employees(name);
+ALTER TABLE employees ADD COLUMN employment_status VARCHAR(20) NOT NULL DEFAULT 'ACTIVE';
+ALTER TABLE employees ADD COLUMN employment_type VARCHAR(20) NOT NULL DEFAULT 'PERMANENT';
+ALTER TABLE employees ADD COLUMN hire_date DATE;
+ALTER TABLE employees ADD COLUMN retirement_date DATE;
+ALTER TABLE employees ADD COLUMN deleted BOOLEAN NOT NULL DEFAULT FALSE;
+ALTER TABLE employees ADD CONSTRAINT ck_employee_status CHECK (employment_status IN ('ACTIVE', 'ON_LEAVE', 'RETIRED'));
+ALTER TABLE employees ADD CONSTRAINT ck_employee_type CHECK (employment_type IN ('PERMANENT', 'CONTRACT', 'OUTSOURCED'));
+ALTER TABLE users ADD COLUMN created_at TIMESTAMP(6) NULL;
+ALTER TABLE users ADD COLUMN updated_at TIMESTAMP(6) NULL;
+ALTER TABLE users ADD COLUMN created_by VARCHAR(255);
+ALTER TABLE users ADD COLUMN updated_by VARCHAR(255);
+ALTER TABLE departments ADD COLUMN created_at TIMESTAMP(6) NULL;
+ALTER TABLE departments ADD COLUMN updated_at TIMESTAMP(6) NULL;
+ALTER TABLE departments ADD COLUMN created_by VARCHAR(255);
+ALTER TABLE departments ADD COLUMN updated_by VARCHAR(255);
+ALTER TABLE employees ADD COLUMN created_at TIMESTAMP(6) NULL;
+ALTER TABLE employees ADD COLUMN updated_at TIMESTAMP(6) NULL;
+ALTER TABLE employees ADD COLUMN created_by VARCHAR(255);
+ALTER TABLE employees ADD COLUMN updated_by VARCHAR(255);

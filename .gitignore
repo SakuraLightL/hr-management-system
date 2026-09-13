@@ -1,0 +1,69 @@
+# =========================
+# Maven / Build
+# =========================
+target/
+build/
+out/
+
+!**/src/main/**/target/
+!**/src/test/**/target/
+!**/src/main/**/build/
+!**/src/test/**/build/
+
+# =========================
+# Maven Wrapper
+# =========================
+.mvn/wrapper/maven-wrapper.jar
+
+# =========================
+# Spring Boot
+# =========================
+HELP.md
+
+# Local Properties
+src/main/resources/application-local.properties
+# Env
+.env
+
+# Logs
+logs/
+*.log
+
+# =========================
+# IntelliJ IDEA
+# =========================
+.idea/
+*.iws
+*.iml
+*.ipr
+
+# =========================
+# Eclipse / STS
+# =========================
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings/
+.springBeans
+.sts4-cache
+
+# =========================
+# VS Code
+# =========================
+.vscode/
+
+# =========================
+# NetBeans
+# =========================
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+
+# =========================
+# OS
+# =========================
+.DS_Store
+Thumbs.db

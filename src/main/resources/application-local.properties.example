@@ -1,0 +1,10 @@
+# Copy to application-local.properties and start with --spring.profiles.active=local
+spring.datasource.url=jdbc:mysql://localhost:3306/hr_portfolio
+spring.datasource.username=hr_app
+spring.datasource.password=${DB_PASSWORD}
+springdoc.api-docs.enabled=true
+springdoc.swagger-ui.enabled=true
+# Optional Google login: uncomment BOTH credentials. Use an administrator-provisioned GOOGLE account.
+# spring.security.oauth2.client.registration.google.client-id=${GOOGLE_CLIENT_ID}
+# spring.security.oauth2.client.registration.google.client-secret=${GOOGLE_CLIENT_SECRET}
+# spring.security.oauth2.client.registration.google.scope=openid,email,profile

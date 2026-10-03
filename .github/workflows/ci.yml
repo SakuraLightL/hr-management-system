@@ -24,3 +24,53 @@ jobs:
         with:
           name: test-results
           path: target/surefire-reports/
+  docker-smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      COMPOSE_PROJECT_NAME: hr-ci-${{ github.run_id }}-${{ github.run_attempt }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Generate isolated test credentials
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import secrets
+          values = {
+              'DB_PASSWORD': secrets.token_hex(24),
+              'MYSQL_ROOT_PASSWORD': secrets.token_hex(24),
+              'BOOTSTRAP_ADMIN_USERNAME': 'ci-admin',
+              'BOOTSTRAP_ADMIN_PASSWORD': secrets.token_hex(24),
+              'SPRING_PROFILES_ACTIVE': 'docker',
+          }
+          Path('.env').write_text(''.join(f'{key}={value}\n' for key, value in values.items()))
+          PY
+      - name: Build and start MySQL and application
+        # Client mechanics are checked before starting the actual application.
+        run: |
+          python3 -m unittest discover -s scripts -p 'test_*.py' -v
+          docker compose up --build --detach
+      - name: Verify real login, CSRF and HR operations
+        run: |
+          set -a
+          source .env
+          set +a
+          export SMOKE_ADMIN_USERNAME="$BOOTSTRAP_ADMIN_USERNAME"
+          export SMOKE_ADMIN_PASSWORD="$BOOTSTRAP_ADMIN_PASSWORD"
+          python3 scripts/smoke-test.py flow
+      - name: Restart application and verify persistence
+        run: |
+          docker compose restart app
+          set -a
+          source .env
+          set +a
+          export SMOKE_ADMIN_USERNAME="$BOOTSTRAP_ADMIN_USERNAME"
+          export SMOKE_ADMIN_PASSWORD="$BOOTSTRAP_ADMIN_PASSWORD"
+          python3 scripts/smoke-test.py persisted
+          python3 scripts/smoke-test.py cleanup
+      - name: Print service status on failure
+        if: failure()
+        run: docker compose ps --all
+      - name: Remove isolated containers and volumes
+        if: always()
+        run: docker compose down --volumes --remove-orphans

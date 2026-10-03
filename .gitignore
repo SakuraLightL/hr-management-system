@@ -67,3 +67,7 @@ logs/
 # =========================
 .DS_Store
 Thumbs.db
+
+# Python smoke tooling
+__pycache__/
+*.pyc

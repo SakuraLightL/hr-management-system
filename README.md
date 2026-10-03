@@ -2,6 +2,25 @@
 
 Java 17 / Spring Boot 3.5 による社員・部署・アカウント管理アプリです。Thymeleaf の管理画面と、同じセッション認証を使う REST API を提供します。
 
+[![CI](https://github.com/SakuraLightL/hr-management-system/actions/workflows/ci.yml/badge.svg)](https://github.com/SakuraLightL/hr-management-system/actions/workflows/ci.yml)
+
+## 最初に見るところ
+
+社員・部署・ログインアカウントを管理する、個人開発の業務アプリです。画面、REST API、認証・認可、DB設計・移行、回帰テストを対象に開発し、外部レビューを受けて改善しています。
+
+| 確認したい点 | 見る場所 |
+| --- | --- |
+| 画面と操作の流れ | 下の画面例、[約90秒のローカルデモ手順](docs/demo-guide.md) |
+| 権限・入力チェックを含む実装 | [機能と権限](#機能と権限)、[設計方針](docs/design-decisions.md) |
+| 問題を調査し修正した過程 | [レビューを受けた改善](docs/improvement-history.md) |
+| テストと動作確認の証拠 | [CI](https://github.com/SakuraLightL/hr-management-system/actions)、[検証状況と制約](docs/verification.md) |
+
+特徴は、画面とAPIに共通の認可・CSRF保護、人事日付の整合性検証と論理削除、FlywayによるDB変更管理です。
+
+![ダッシュボード・社員一覧・編集フォームの画面例](docs/demo.gif)
+
+これは既存スクリーンショットを切り替えるGIFです。操作の録画ではありません。公開デモ環境はなく、Dockerによる再現手順を下記に記載しています。Docker・MySQL・実LOCALセッションは公開CIで検証済みです。実Google接続は未検証です。検証対象コミットと結果は[検証状況](docs/verification.md)で区別しています。
+
 ## 機能と権限
 
 | 操作 | USER | ADMIN |
@@ -43,7 +62,7 @@ cp .env.example .env
 docker compose up --build
 ```
 
-[ログイン画面](http://localhost:8080/login)を開き、`.env` の `BOOTSTRAP_ADMIN_USERNAME` / `BOOTSTRAP_ADMIN_PASSWORD` でログインしてください。初期管理者はユーザーテーブルが空の場合だけ作成され、再起動で既存パスワードを上書きしません。作成後は bootstrap 用の環境変数を削除して通常起動できます（Compose の必須指定も外してください）。
+[ログイン画面](http://localhost:8080/login)を開き、`.env` の `BOOTSTRAP_ADMIN_USERNAME` / `BOOTSTRAP_ADMIN_PASSWORD` でログインしてください。空のDBで初めて起動するときは管理者パスワードの設定が必要です。初期管理者はユーザーテーブルが空の場合だけ作成され、再起動で既存パスワードを上書きしません。作成後は`.env`からbootstrap用パスワードを削除して通常起動できます。
 
 Compose はアプリを `127.0.0.1:8080` にのみ公開します。MySQL データは `mysql-data` ボリュームに保存します。既存環境からの更新では、先に下記の移行手順を確認してください。
 
@@ -64,7 +83,7 @@ Windows PowerShell では `$env:DB_PASSWORD = '...'` のように設定し、`./
 
 ## Google ログイン
 
-ローカル設定例の Google client-id / client-secret / scope を有効化し、環境変数 `GOOGLE_CLIENT_ID` と `GOOGLE_CLIENT_SECRET` を設定します。Google 側のリダイレクト URI は `http://localhost:8080/login/oauth2/code/google` です。設定がない場合はGoogleログインボタンを表示しません。
+環境変数`GOOGLE_CLIENT_ID`と`GOOGLE_CLIENT_SECRET`を設定し、Java起動では`local,oauth`、Dockerでは`.env`の`SPRING_PROFILES_ACTIVE=docker,oauth`を指定します。Google側のリダイレクトURIは`http://localhost:8080/login/oauth2/code/google`です。通常の`local`／`docker`プロファイルではGoogleログインボタンを表示せず、Google認証情報なしで起動します。実接続は未検証です。[設定と検証手順](docs/oauth-verification.md)を参照してください。
 
 管理者がユーザー画面で認証方式 `GOOGLE`、メール、権限、重複しないユーザー名を事前登録します。ログイン時は `email_verified=true` と事前登録済みメールを要求し、初回ログインで Google の subject を固定します。未登録アカウントは自動登録せず、LOCAL アカウントへのメールによる自動連携もしません。既存の認証方式・連携済みメールを変更する場合は、別アカウントとして管理者が明示的に登録してください。
 
@@ -156,3 +175,5 @@ node --test src/test/js/*.test.cjs
 JavaのテストはH2のMySQL互換モードで実際のFlyway SQLを適用し、セキュリティフィルター・MVCテンプレート・JPAをまとめて検証します。さらにOIDCとパスワードのユニットテスト、Node標準テストランナーによるXSS・CSRFの回帰テストを実行します。GitHub ActionsでもJava 17で同じチェックを行います。H2の検証はMySQL実機の検証を代替するものではありません。
 
 API互換性、認証、データ管理の設計判断は [設計方針](docs/design-decisions.md) を参照してください。
+
+DockerとMySQL上での実ログイン・CSRF・更新・再起動後のデータ保持を確認する`docker-smoke`ジョブを追加しています。ローカルでの実行手順、検証済みと未検証の区別は[検証状況](docs/verification.md)に記載しています。

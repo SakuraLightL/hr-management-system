@@ -10,6 +10,8 @@
 | Googleのメールだけで自動登録・既存アカウント連携していた | GOOGLEの事前登録、検証済みメール、subject固定を要求。LOCALと自動連携しない | `CustomOidcUserService.java`とそのユニットテスト。実Google接続は別途検証が必要 |
 | 起動時にDB変更を自動推測していた | FlywayのV1／V2で変更を管理し、JPAはvalidate。既存DBはバックアップとbaselineを経て移行 | `db/migration/`、[DB移行手順](database-migration.md) |
 
+今回のREADME・Docker・OAuth検証の改善は[公開PR #1](https://github.com/SakuraLightL/hr-management-system/pull/1)で確認できます。実行結果は[検証状況](verification.md)から公開CIへ辿れます。
+
 ## 設計上の選択
 
 - MVCとAPIのセッションを共有するため、両方で同じ認可・CSRFルールを適用しました。

@@ -1,6 +1,6 @@
 # 検証状況
 
-## 既存公開mainで確認できる証拠
+## 改善前の公開mainで確認できる証拠
 
 - 対象コミット：`5351c7bf46eaa10b5569bfadbe70ca6a97d65d56`。
 - [GitHub Actions実行](https://github.com/SakuraLightL/hr-management-system/actions/runs/34743175422)：2026-09-13、Java 17のMaven verifyとNodeテストが成功。既存テストはJava27件、Node3件。
@@ -18,9 +18,11 @@
 | 実Google OAuth | 未実施 | 手元のGoogle OAuth設定とアカウントが必要 |
 | 公開デモ環境 | なし | ローカル手順と既存画面のGIFを提供 |
 
-新しい変更の検証対象コミットは`35a4338776ac6b66847af35e85e4eb2c9508f44e`です。[CI実行](https://github.com/SakuraLightL/hr-management-system-history-20260913/actions/runs/37107694302)で、`test`と`docker-smoke`の両ジョブが成功しました。初回のスモーク検証は起動直後の接続切断で失敗したため、接続と初期管理者ログインの準備完了まで再試行する処理を追加して再検証しています。
+公開側の検証対象コミットは`fe6497ccbe0531b612b089835b2f4a88dc7d0d35`です。[公開CI実行](https://github.com/SakuraLightL/hr-management-system/actions/runs/37110632426)で、`test`と`docker-smoke`の両ジョブが成功しました。Java29件、Node3件、Python2件のテスト、DockerイメージとMySQL 8.4の起動、実LOCALセッションを使う操作、再起動後のデータ保持を確認しています。
 
-このCIのURLは非公開の履歴リポジトリです。採用担当者に見せる公開用リポジトリへ反映した後は、その公開CIの実行URLを追加してください。この記録更新とPythonキャッシュのignore設定は検証対象コミットより後の変更で、アプリやテストの動作は変更していません。実Google接続の成功は、このCIから推定しません。
+初回の移行元スモーク検証は起動直後の接続切断で失敗したため、接続と初期管理者ログインの準備完了まで再試行する処理を追加しました。今回の公開CIでも、その修正を含めて確認しています。
+
+この検証記録を更新するコミットは検証対象より後ですが、アプリ・テスト・CIの動作は変更していません。実Googleへの接続、トークン交換、実アカウントでの成功ログインは未検証です。ダミー認証情報でのキャンセルフロー成功と区別しています。
 
 ## Dockerスモークテスト
 

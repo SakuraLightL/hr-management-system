@@ -121,4 +121,12 @@ class HrSystemApplicationTests {
         mvc.perform(get("/swagger-ui/index.html").with(user("reader"))).andExpect(status().isForbidden());
         mvc.perform(get("/v3/api-docs").with(user("reader"))).andExpect(status().isForbidden());
     }
+    @Test void loginShowsSeparateGuidanceForGoogleFailure() throws Exception {
+        mvc.perform(get("/login?oauthError")).andExpect(status().isOk())
+                .andExpect(content().string(org.hamcrest.Matchers.containsString("Googleログインを完了できませんでした")))
+                .andExpect(content().string(org.hamcrest.Matchers.not(org.hamcrest.Matchers.containsString("ユーザー名またはパスワードが違います"))));
+        mvc.perform(get("/login?error")).andExpect(status().isOk())
+                .andExpect(content().string(org.hamcrest.Matchers.containsString("ユーザー名またはパスワードが違います")))
+                .andExpect(content().string(org.hamcrest.Matchers.not(org.hamcrest.Matchers.containsString("Googleログインを完了できませんでした"))));
+    }
 }

@@ -38,6 +38,7 @@ public class SecurityConfig {
         if (registrations.getIfAvailable() != null) {
             http.oauth2Login(oauth -> oauth.loginPage("/login")
                     .userInfoEndpoint(info -> info.oidcUserService(oidc))
+                    .failureUrl("/login?oauthError")
                     .defaultSuccessUrl("/dashboard", true));
         }
         return http.build();

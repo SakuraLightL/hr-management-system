@@ -108,6 +108,10 @@
 
             </div>
 
+            <div th:if="${param.oauthError}" class="alert alert-danger" role="alert">
+              Googleログインを完了できませんでした。別のアカウントを選ぶか、管理者に利用登録と認証方式の確認を依頼してください。
+            </div>
+
             <!-- Logout -->
             <div th:if="${param.logout}"
                  class="alert alert-success">
